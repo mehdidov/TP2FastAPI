@@ -46,7 +46,7 @@ def get_user(
     return user
 
 
-# DELETE USER
+# Delete a user
 @router.delete("/{user_id}")
 def delete_user(
     user_id: int,
@@ -59,7 +59,7 @@ def delete_user(
 
     db.delete(user)
     db.commit()
-    return {"message": "Suppression de l'utilisateur"}
+    return {"message": "suppression de l'utilisateur"}
 
 @router.patch("/{user_id}", response_model=User)
 def update_user(

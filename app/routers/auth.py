@@ -8,8 +8,10 @@ from app.dependencies.auth import authenticate_user, create_access_token, get_pa
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+# Authentication router
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
+# Open access to the database and automatically closes it once processing is complete
 def get_db():
     db = SessionLocal()
     try:
@@ -17,6 +19,7 @@ def get_db():
     finally:
         db.close()
 
+# New user with a hashed password.
 @router.post("/register")
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(UserModel).filter(UserModel.username == user_in.username).first()
@@ -28,6 +31,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return {"message": "utilisateur créé"}
 
+# Allows to create a user with a secure password
 @router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
